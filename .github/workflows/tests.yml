@@ -24,10 +24,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Official Playwright installer for GitHub Actions (no YAML conditions)
-      - name: Install Playwright Browsers
-        uses: microsoft/playwright-github-action@v1
+      # ✅ Install Playwright browsers + Linux dependencies directly
+      - name: Install Playwright browsers
+        run: |
+          python -m playwright install --with-deps
 
-      - name: Run UI Tests
+      - name: Run UI tests
         run: |
           pytest --maxfail=1 --disable-warnings --cache-clear
