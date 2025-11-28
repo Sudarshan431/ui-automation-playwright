@@ -1,4 +1,4 @@
-name: Run Tests
+name: Run UI Tests
 
 on:
   push:
@@ -7,43 +7,27 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Step 4 (Optional): Install Playwright browsers 
-      # If your project contains Playwright UI tests
+      # Official Playwright installer for GitHub Actions (no YAML conditions)
       - name: Install Playwright Browsers
-        if: exists('tests/test_login.py')
-        run: |
-          python -m playwright install --with-deps
+        uses: microsoft/playwright-github-action@v1
 
-      # Step 5: Run Pytest
-      - name: Run test suite
+      - name: Run UI Tests
         run: |
           pytest --maxfail=1 --disable-warnings --cache-clear
-
-      # Step 6: Upload Pytest HTML report (if generated)
-      - name: Upload HTML Test Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: report.html
-          if-no-files-found: ignore
